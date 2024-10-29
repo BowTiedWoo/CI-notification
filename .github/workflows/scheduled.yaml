@@ -1,0 +1,35 @@
+name: Property Testings
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  property-testing:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        clarity_version: [1, 2, 3]
+    name: Clarity::V${{ matrix.clarity_version }} Property Tests
+    env:
+      PROPTEST_CASES: 100
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+
+      - name: Use Rust stable
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
+
+      - name: Run Tests
+        run: |
+            cargo nextest run \
+            --features test-clarity-v${{ matrix.clarity_version }} \
+            --test wasm-generation \
+            --test standard
