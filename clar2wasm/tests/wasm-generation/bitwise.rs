@@ -111,4 +111,13 @@ mod clarity_v2_v3 {
             )
         }
     }
+
+    proptest! {
+        #![proptest_config(runtime_config())]
+
+        #[test]
+        fn crossprop_xor_uint(val1 in uint(), val2 in uint()) {
+            assert!(false);
+        }
+    }
 }

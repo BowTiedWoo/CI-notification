@@ -664,7 +664,7 @@ fn prop_sha512_int_on_unsigned() {
         "stdlib.sha512-int",
         2048,
         END_OF_STANDARD_DATA as i32,
-        1,
+        64,
         |n| Sha512Sum::from_data(&n.to_le_bytes()).as_bytes().to_vec(),
     )
 }
