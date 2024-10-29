@@ -116,7 +116,7 @@ mod clarity_v2_v3 {
         #![proptest_config(runtime_config())]
 
         #[test]
-        fn crossprop_xor_uint(val1 in uint(), val2 in uint()) {
+        fn crossprop_fail_please(val1 in uint(), val2 in uint()) {
             assert!(false);
         }
     }
