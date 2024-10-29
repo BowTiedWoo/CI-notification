@@ -557,7 +557,7 @@ mod tests {
         let snippet = "
         (define-map some-map int {x: int})
         (map-insert some-map 21 {x: 21} {x: 21})";
-        let expected = Err(Error::Unchecked(CheckErrors::IncorrectArgumentCount(3, 4)));
+        let expected = Err(Error::Unchecked(CheckErrors::IncorrectArgumentCount(3, 3)));
         crosscheck(snippet, expected);
     }
 
