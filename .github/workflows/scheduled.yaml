@@ -34,7 +34,7 @@ jobs:
           body-template: |
             GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
 
-      - name: Send message to Slack
+      - name: Send message to Slack channel
         uses: slackapi/slack-github-action@v1.27.0
         if: ${{ failure() }}
         with:
