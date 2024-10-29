@@ -117,7 +117,7 @@ mod clarity_v2_v3 {
 
         #[test]
         fn crossprop_fail_please(val1 in uint(), val2 in uint()) {
-            assert!(false);
+            assert_eq!(true, false);
         }
     }
 }
