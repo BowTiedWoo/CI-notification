@@ -46,7 +46,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "❌ *Property Testing Failed*\n*Workflow:* Property Testing\n*Status:* ${{ job.status }}\n*Link:* ${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    "text": "GitHub Actions workflow [Property Testing #${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) failed."
                   }
                 }
               ]
