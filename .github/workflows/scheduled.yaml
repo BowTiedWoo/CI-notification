@@ -46,7 +46,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Actions workflow [Property Testing #${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) failed."
+                    "text": "GitHub Actions workflow [Property Testing #${{ github.run_number }}](<https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}>) failed."
                   }
                 }
               ]
