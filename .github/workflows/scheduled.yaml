@@ -24,15 +24,18 @@ jobs:
       - name: Run
         run: cargo test --test wasm-generation --test standard
 
-      - name: Add link to the failure issue
+      - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
         if: ${{ failure() }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
-          # label-name: "property-testing-failure"
-          title-template: "Property testing coverage has failed"
+          label-name: "property-testing-failure"
+          title-template: "Property testing failure"
           body-template: |
             GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
+            ```
+            ${{ steps.run-tests.outputs.logs }}
+            ```
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
