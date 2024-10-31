@@ -29,7 +29,7 @@ jobs:
         if: ${{ failure() }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
-          label-name: "property-testing-failure"
+          # label-name: "property-testing-failure"
           title-template: "Property testing coverage has failed"
           body-template: |
             GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
