@@ -22,7 +22,10 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run
-        run: cargo test --test wasm-generation --test standard
+        run: |
+          cargo test --test wasm-generation --test standard 2>&1 | tee output.log
+          LOGS=$(awk '/cc /,/Error: Process completed with exit code 101/' output.log)
+          echo "logs=$LOGS" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
@@ -32,9 +35,9 @@ jobs:
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}/job/{{job.id}}) failed.
             ```
-            ${{ steps.run-tests.outputs.logs }}
+            ${{ env.logs }}
             ```
 
       - name: Send message to Slack
