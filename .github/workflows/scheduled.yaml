@@ -24,7 +24,7 @@ jobs:
       - name: Run
         run: |
           cargo test --test wasm-generation --test standard 2>&1 | tee output.log
-          LOGS=$(awk '/cc /,/Error: Process completed with exit code 101/' output.log)
+          LOGS=$(awk '/thread/,/Error: Process completed with exit code 101/' output.log)
           echo "logs=$LOGS" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
