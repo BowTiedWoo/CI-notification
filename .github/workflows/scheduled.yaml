@@ -23,31 +23,31 @@ jobs:
 
       - name: Run
         run: |
-          cargo test --test wasm-generation --test standard | tee test-output.log
+          cargo test --test wasm-generation --test standard
 
-          if grep -q "FAILED" test-output.log; then
-            echo "Property test failed. Exiting with code 101."
-            exit 101
-          else
-            echo "Tests passed."
-          fi
+      - name: Retrieve Job ID
+        id: get_job_id
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          RUN_ID: ${{ github.run_id }}
+          JOB_NAME: ${{ github.job }}
+        run: |
+          job_id=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
+          "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs" \
+          | jq -r ".jobs[] | select(.name == \"${JOB_NAME}\") | .id")
+          echo "job_id=$job_id" >> $GITHUB_ENV
 
-      - name: Upload Logs
+      - name: Create GitHub Issue on Failure
+        uses: jayqi/failed-build-issue-action@v1
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        env:
+          JOB_ID: ${{ env.job_id }}
         with:
-          name: property-testing-logs
-          path: ./clar2wasm/tests/proptest-regressions/test-output.log
-
-      # - name: Create GitHub Issue on Failure
-      #   uses: jayqi/failed-build-issue-action@v1
-      #   if: ${{ failure() }}
-      #   with:
-      #     github-token: ${{ secrets.GH_TOKEN }}
-      #     label-name: "property-testing-failure"
-      #     title-template: "Property testing failure"
-      #     body-template: |
-      #       GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
+          github-token: ${{ secrets.GH_TOKEN }}
+          label-name: "property-testing-failure"
+          title-template: "Property testing failure"
+          body-template: |
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}/jobs/{{JOB_ID}}) failed.
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
@@ -68,35 +68,3 @@ jobs:
             }
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-
-  post-failure-details:
-    name: Post Failure Details
-    runs-on: ubuntu-latest
-    needs: property-testing
-    if: ${{ failure() }}
-    steps:
-      - name: Download Logs
-        uses: actions/download-artifact@v3
-        with:
-          name: property-testing-logs
-          path: ./clar2wasm/tests/proptest-regressions/test-output.log
-
-      - name: Read Log Content
-        id: log-content
-        run: |
-          LOG_CONTENT=$(cat ./clar2wasm/tests/proptest-regressions/test-output.log)
-          echo "log_content=$LOG_CONTENT" >> $GITHUB_ENV
-
-      - name: Create GitHub Issue on Failure
-        uses: jayqi/failed-build-issue-action@v1
-        with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          label-name: "property-testing-failure"
-          title-template: "Property testing failure"
-          body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) failed.
-
-            **Logs**:
-            ```
-            ${{ env.log_content }}
-            ```
