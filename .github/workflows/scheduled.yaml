@@ -33,7 +33,10 @@ jobs:
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/job/${{ github.job_id }}) failed.
+            GitHub Actions workflow **{{ job.name }}** [{{ workflow }} #{{ runNumber }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs/{{ job_id }}) failed.
+
+            **Job**: {{ job.name }}
+            **Run**: #{{ runNumber }}
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
