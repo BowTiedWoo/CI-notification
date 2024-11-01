@@ -29,8 +29,8 @@ jobs:
         id: get_job_id
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          RUN_ID: ${{ runId }}
-          JOB_NAME: ${{ job }}
+          RUN_ID: ${{ github.run_id }}
+          JOB_NAME: ${{ github.job }}
         run: |
           job_id=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
           "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs" \
