@@ -24,10 +24,6 @@ jobs:
       - name: Run
         run: |
           cargo test --test wasm-generation --test standard 2>&1 | tee output.log
-          LOGS=$(awk '/thread.*failed/,/Error: Process completed with exit code 101/' output.log)
-          echo "logs<<EOF" >> $GITHUB_ENV
-          echo "$LOGS" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
