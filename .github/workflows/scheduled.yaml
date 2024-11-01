@@ -29,8 +29,8 @@ jobs:
         id: get_job_id
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          RUN_ID: ${{ github.run_id }}
-          JOB_NAME: ${{ github.job }}
+          RUN_ID: ${{ runId }}
+          JOB_NAME: ${{ job }}
         run: |
           job_id=$(curl -s -H "Authorization: token ${GITHUB_TOKEN}" \
           "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs" \
@@ -47,7 +47,7 @@ jobs:
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}/job/{{ JOB_ID }}) failed.
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}/job/{{JOB_ID}}) failed.
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
