@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: property-testing-logs
-          path: .clar2wasm/tests/proptest-regressions/test-output.log
+          path: ./clar2wasm/tests/proptest-regressions/test-output.log
 
       # - name: Create GitHub Issue on Failure
       #   uses: jayqi/failed-build-issue-action@v1
@@ -79,12 +79,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: property-testing-logs
-          path: ./logs
+          path: ./clar2wasm/tests/proptest-regressions/test-output.log
 
       - name: Read Log Content
         id: log-content
         run: |
-          LOG_CONTENT=$(cat ./logs/test-output.log)
+          LOG_CONTENT=$(cat ./clar2wasm/tests/proptest-regressions/test-output.log)
           echo "log_content=$LOG_CONTENT" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
