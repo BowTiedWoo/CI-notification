@@ -25,6 +25,13 @@ jobs:
         run: |
           cargo test --test wasm-generation --test standard | tee test-output.log
 
+          if grep -q "FAILED" test-output.log; then
+            echo "Property test failed. Exiting with code 101."
+            exit 101
+          else
+            echo "Tests passed."
+          fi
+
       - name: Upload Logs
         if: ${{ failure() }}
         uses: actions/upload-artifact@v3
