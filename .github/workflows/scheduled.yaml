@@ -31,7 +31,8 @@ jobs:
       - name: Read Failure Section
         if: ${{ failure() }}
         id: read_failure_section
-        run: echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
+        run: |
+          echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
           cat failure_section.log >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
