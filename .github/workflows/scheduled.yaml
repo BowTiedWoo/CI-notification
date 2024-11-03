@@ -28,6 +28,10 @@ jobs:
           echo "Extracting relevant section from test output:"
           grep -A 10 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log
 
+      - name: Read Failure Section
+        id: read_failure_section
+        run: echo "FAILURE_SECTION=$(cat failure_section.log)" >> $GITHUB_ENV
+
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
         if: ${{ failure() }}
@@ -38,7 +42,7 @@ jobs:
           body-template: |
             GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
             ```
-            $(cat failure_section.log)
+            ${{ env.FAILURE_SECTION }}
             ```
 
       - name: Send message to Slack
