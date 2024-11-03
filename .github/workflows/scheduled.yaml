@@ -33,9 +33,7 @@ jobs:
         id: read_failure_section
         run: |
           if [ -s failure_section.log ]; then
-            echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
-            cat failure_section.log >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            echo "FAILURE_SECTION=$(cat failure_section.log)" >> $GITHUB_ENV
           else
             echo "FAILURE_SECTION=No relevant section found." >> $GITHUB_ENV
           fi
