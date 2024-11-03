@@ -30,7 +30,9 @@ jobs:
 
       - name: Read Failure Section
         id: read_failure_section
-        run: echo "FAILURE_SECTION=$(cat failure_section.log)" >> $GITHUB_ENV
+        run: echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
+          cat failure_section.log >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
