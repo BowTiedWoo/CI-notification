@@ -27,14 +27,13 @@ jobs:
           cargo test --test wasm-generation --test standard | tee output.log
           echo "Extracting relevant section from test output:"
           touch failure_section.log
-          grep -A 50 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log
+          grep -A 50 "Test failed: assertion \left == right\ failed" output.log > failure_section.log || true
           echo "failure_section=$(cat failure_section.log)" >> $GITHUB_ENV
-
       - name: Check failure_section.log
         if: ${{ failure() }}
         run: |
-          cat failure_section.log
-          echo failure_section.log
+          cat $GITHUB_WORKSPACE/failure_section.log
+          echo $GITHUB_WORKSPACE/failure_section.log
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
