@@ -29,6 +29,7 @@ jobs:
           grep -A 10 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log
 
       - name: Read Failure Section
+        if: ${{ failure() }}
         id: read_failure_section
         run: echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
           cat failure_section.log >> $GITHUB_ENV
