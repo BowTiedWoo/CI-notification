@@ -21,10 +21,6 @@ jobs:
       - name: Use Rust stable
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Run
-        run: |
-          cargo test --test wasm-generation --test standard
-
       - name: Retrieve Job ID
         id: get_job_id
         env:
@@ -36,6 +32,10 @@ jobs:
           "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs" \
           | jq -r ".jobs[] | select(.name == \"${JOB_NAME}\") | .id")
           echo "job_id=$job_id" >> $GITHUB_ENV
+
+      - name: Run
+        run: |
+          cargo test --test wasm-generation --test standard
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
