@@ -32,11 +32,7 @@ jobs:
         if: ${{ failure() }}
         id: read_failure_section
         run: |
-          if [ -s failure_section.log ]; then
-            echo "FAILURE_SECTION=$(cat failure_section.log)" >> $GITHUB_ENV
-          else
-            echo "FAILURE_SECTION=No relevant section found." >> $GITHUB_ENV
-          fi
+          echo "FAILURE_SECTION=$(cat failure_section.log)" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
