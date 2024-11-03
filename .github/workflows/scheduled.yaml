@@ -26,15 +26,19 @@ jobs:
           set -o pipefail
           cargo test --test wasm-generation --test standard | tee output.log
           echo "Extracting relevant section from test output:"
-          grep -A 10 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log
+          grep -A 10 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log || true
 
       - name: Read Failure Section
         if: ${{ failure() }}
         id: read_failure_section
         run: |
-          echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
-          cat failure_section.log >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          if [ -s failure_section.log ]; then
+            echo "FAILURE_SECTION<<EOF" >> $GITHUB_ENV
+            cat failure_section.log >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          else
+            echo "FAILURE_SECTION=No relevant section found." >> $GITHUB_ENV
+          fi
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
