@@ -26,6 +26,7 @@ jobs:
           set -o pipefail
           cargo test --test wasm-generation --test standard | tee output.log
           echo "Extracting relevant section from test output:"
+          touch failure_section.log
           grep -A 50 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log
           echo "failure_section=$(cat ./failure_section.log)" >> $GITHUB_ENV
 
