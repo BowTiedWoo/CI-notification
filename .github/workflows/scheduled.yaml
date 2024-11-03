@@ -22,26 +22,22 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run
-        id: run
-        outputs:
-          failure_section: ${{ steps.run.outputs.failure_section }}
         run: |
           set -o pipefail
-          cargo test --test wasm-generation --test standard | tee output.log
+          cargo test --test wasm-generation --test standard > output.log
           echo "Extracting relevant section from test output:"
           grep -A 50 "Test failed: assertion \`left == right\` failed" output.log > failure_section.log
-          echo "failure_section=$(cat ./failure_section.log)" >> $GITHUB_OUTPUT
+          echo "failure_section=$(cat ./failure_section.log)" >> $GITHUB_ENV
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
         if: ${{ failure() }}
-        needs: run
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.\n\n${{ needs.run.outputs.failure_section }}
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.\n\n${{ env.failure_section }}
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
