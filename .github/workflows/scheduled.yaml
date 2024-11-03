@@ -21,18 +21,6 @@ jobs:
       - name: Use Rust stable
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Retrieve Job ID
-        id: get_job_id
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_API_TOKEN }}
-          RUN_ID: ${{ github.run_id }}
-          JOB_NAME: ${{ github.job }}
-        run: |
-          job_id=$(curl -s -H "Authorization: token ${GH_API_TOKEN}" \
-          "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${RUN_ID}/jobs" \
-          | jq -r ".jobs[] | select(.name == \"${JOB_NAME}\") | .id")
-          echo "job_id=$job_id" >> $GITHUB_ENV
-
       - name: Run
         run: |
           cargo test --test wasm-generation --test standard
@@ -40,14 +28,12 @@ jobs:
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
         if: ${{ failure() }}
-        env:
-          JOB_ID: ${{ env.job_id }}
         with:
           github-token: ${{ secrets.GH_TOKEN }}
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}/job/{{JOB_ID}}) failed.
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
