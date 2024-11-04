@@ -28,13 +28,9 @@ jobs:
           test_exit=${PIPESTATUS[0]}
           echo "Extracting relevant section from test output:"
           echo "output.log: $(cat output.log)"
-          grep -A 50 'Test failed: assertion \`left == right\` failed' output.log >> "$GITHUB_WORKSPACE/failure_section.log"
-          echo "failure_section.log: $(cat \"$GITHUB_WORKSPACE/failure_section.log\")"
-          echo "failure_section=$(cat $GITHUB_WORKSPACE/failure_section.log)" >> $GITHUB_ENV
-          # Check if failure_section.log has content
-          if [ -s $GITHUB_WORKSPACE/failure_section.log ]; then
-            exit 101
-          fi
+          grep -A 10 'Test failed: assertion' output.log >> failure_section.log
+          echo "failure_section.log: $(cat failure_section.log)"
+          echo "failure_section=$(cat failure_section.log)" >> $GITHUB_ENV
           # Also exit with 101 if cargo test failed
           if [ $test_exit -ne 0 ]; then
             exit 101
