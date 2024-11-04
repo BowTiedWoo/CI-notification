@@ -26,9 +26,12 @@ jobs:
           set +e
           cargo test --test wasm-generation --test standard | tee output.log
           echo "Extracting relevant section from test output:"
-          touch failure_section.log
           grep -A 50 "Test failed: assertion \left == right\ failed" output.log > failure_section.log || true
           echo "failure_section=$(cat failure_section.log)" >> $GITHUB_ENV
+          # Check if failure_section.log has content
+          if [ -s failure_section.log ]; then
+            exit 101
+          fi
 
       - name: Check failure_section.log
         if: ${{ failure() }}
