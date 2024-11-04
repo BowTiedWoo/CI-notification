@@ -26,21 +26,13 @@ jobs:
           set +e
           cargo test --test wasm-generation --test standard | tee output.log
           test_exit=${PIPESTATUS[0]}
-          echo "Extracting relevant section from test output:"
-          echo "output.log: $(cat output.log)"
           grep -A 50 'Test failed: assertion' output.log >> failure_section.log
-          echo "failure_section.log: $(cat failure_section.log)"
-          echo "failure_section=$(cat failure_section.log)" >> $GITHUB_ENV
-          # Also exit with 101 if cargo test failed
+          echo "failure_section<<EOF" >> $GITHUB_ENV
+          cat failure_section.log >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
           if [ $test_exit -ne 0 ]; then
             exit 101
           fi
-
-      - name: Check failure_section.log
-        if: ${{ failure() }}
-        run: |
-          cat $GITHUB_WORKSPACE/failure_section.log
-          echo $GITHUB_WORKSPACE/failure_section.log
 
       - name: Create GitHub Issue on Failure
         uses: jayqi/failed-build-issue-action@v1
@@ -52,7 +44,7 @@ jobs:
           body-template: |
             GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.\
 
-            $(cat failure_section.log)
+            ${{ env.failure_section }}
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
