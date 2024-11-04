@@ -28,7 +28,7 @@ jobs:
           test_exit=${PIPESTATUS[0]}
           echo "Extracting relevant section from test output:"
           echo "output.log: $(cat output.log)"
-          grep -A 10 'Test failed: assertion' output.log >> failure_section.log
+          grep -A 50 'Test failed: assertion' output.log >> failure_section.log
           echo "failure_section.log: $(cat failure_section.log)"
           echo "failure_section=$(cat failure_section.log)" >> $GITHUB_ENV
           # Also exit with 101 if cargo test failed
@@ -50,10 +50,9 @@ jobs:
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
-            ```
-            ${{ env.failure_section }}
-            ```
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.\
+
+            ${{ cat failure_section.log }}
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
