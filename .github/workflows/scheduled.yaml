@@ -27,11 +27,10 @@ jobs:
           cargo test --test wasm-generation --test standard | tee output.log
           test_exit=${PIPESTATUS[0]}
           echo "Extracting relevant section from test output:"
-          touch failure_section.log
-          grep -A 50 "Test failed: assertion \left == right\ failed" output.log > failure_section.log || true
-          echo "failure_section=$(cat failure_section.log)" >> $GITHUB_ENV
+          grep -A 50 "Test failed: assertion \left == right\ failed" output.log > $GITHUB_WORKSPACE/failure_section.log
+          echo "failure_section=$(cat $GITHUB_WORKSPACE/failure_section.log)" >> $GITHUB_ENV
           # Check if failure_section.log has content
-          if [ -s failure_section.log ]; then
+          if [ -s $GITHUB_WORKSPACE/failure_section.log ]; then
             exit 101
           fi
           # Also exit with 101 if cargo test failed
@@ -53,7 +52,10 @@ jobs:
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.\n\n${{ env.failure_section }}
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
+            ```
+            ${{ env.failure_section }}
+            ```
 
       - name: Send message to Slack
         uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
