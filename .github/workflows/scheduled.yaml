@@ -28,7 +28,7 @@ jobs:
           test_exit=${PIPESTATUS[0]}
           echo "Extracting relevant section from test output:"
           grep -A 50 "Test failed: assertion \left == right\ failed" output.log > $GITHUB_WORKSPACE/failure_section.log
-          echo $GITHUB_WORKSPACE/failure_section.log
+          echo "$(cat $GITHUB_WORKSPACE/failure_section.log)"
           echo "failure_section=$(cat $GITHUB_WORKSPACE/failure_section.log)" >> $GITHUB_ENV
           # Check if failure_section.log has content
           if [ -s $GITHUB_WORKSPACE/failure_section.log ]; then
