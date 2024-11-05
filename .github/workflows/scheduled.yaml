@@ -2,14 +2,13 @@ name: Property Testings
 
 on:
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: "0 */4 * * *"
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   property-testing:
-    name: Property Testing
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
