@@ -18,13 +18,16 @@ jobs:
       - name: Checkout PR
         uses: actions/checkout@v4
 
-      - name: Use Rust stable
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install nextest
+        uses: taiki-e/install-action@nextest
 
-      - name: Run
+      - name: Run Tests
         run: |
           set +e
-          cargo test --test wasm-generation --test standard | tee output.log
+          cargo nextest run \
+          --features test-clarity-v${{ matrix.clarity_version }} \
+          --test wasm-generation \
+          --test standard | tee output.log
           test_exit=${PIPESTATUS[0]}
           grep -A 50 'Test failed: assertion' output.log >> failure_section.log
           echo "failure_section<<EOF" >> $GITHUB_ENV
