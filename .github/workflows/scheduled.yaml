@@ -37,8 +37,7 @@ jobs:
           --test standard 2>&1| tee output.log
           test_exit=${PIPESTATUS[0]}
           cat output.log | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' | sed 's/\x0//g' > cleaned_output.log
-          echo "output.log: $(cat cleaned_output.log)"
-          sed -n '/Test failed: assertion/,/Canceling due to test failure/p' cleaned_output.log >> failure_section.log
+          sed -n '/Test failed: assertion/,/FAIL/p' cleaned_output.log >> failure_section.log
           echo "failure_section<<EOF" >> $GITHUB_ENV
           cat failure_section.log >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
