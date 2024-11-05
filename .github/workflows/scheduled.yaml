@@ -36,8 +36,9 @@ jobs:
           --test wasm-generation \
           --test standard 2>&1| tee output.log
           test_exit=${PIPESTATUS[0]}
-          echo "output.log: $(cat output.log)"
-          sed -n '/Test failed: assertion/,/Canceling due to test failure/p' output.log >> failure_section.log
+          cat output.log | sed 's/\x1b\[[0-9;]*[a-zA-Z]//g' | sed 's/\x0//g' > cleaned_output.log
+          echo "output.log: $(cat cleaned_output.log)"
+          sed -n '/Test failed: assertion/,/Canceling due to test failure/p' cleaned_output.log >> failure_section.log
           echo "failure_section<<EOF" >> $GITHUB_ENV
           cat failure_section.log >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -54,7 +55,7 @@ jobs:
           title-template: "Property testing failure"
           body-template: |
             GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
-            ```log
+            ```ansi
             ${{ env.failure_section }}
             ```
 
