@@ -2,8 +2,7 @@ name: Property Testings
 
 on:
   schedule:
-    - cron: "*/2 * * * *"
-  workflow_dispatch:
+    - cron: "0 */4 * * *"
 
 env:
   CARGO_TERM_COLOR: always
