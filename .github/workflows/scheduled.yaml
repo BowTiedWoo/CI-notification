@@ -3,6 +3,7 @@ name: Property Testings
 on:
   schedule:
     - cron: "0 */4 * * *"
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
@@ -52,8 +53,8 @@ jobs:
           label-name: "property-testing-failure"
           title-template: "Property testing failure"
           body-template: |
-            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) failed.
-            ```ansi
+            GitHub Actions workflow [{{workflow}} #{{runNumber}}](https://github.com/{{repo.owner}}/{{repo.repo}}/actions/runs/{{runId}}) Clarity::V${{ matrix.clarity_version }} failed.
+            ```log
             ${{ env.failure_section }}
             ```
 
@@ -69,7 +70,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "GitHub Actions workflow <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Property Testing #${{ github.run_number }}> failed."
+                    "text": "GitHub Actions workflow <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Property Testing #${{ github.run_number }}> Clarity::V${{ matrix.clarity_version }} failed."
                   }
                 }
               ]
