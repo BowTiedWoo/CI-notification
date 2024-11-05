@@ -12,6 +12,11 @@ jobs:
   property-testing:
     name: Property Testing
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        clarity_version: [1, 2, 3]
+    name: Clarity::V${{ matrix.clarity_version }} Property Tests
     env:
       PROPTEST_CASES: 2
     steps:
