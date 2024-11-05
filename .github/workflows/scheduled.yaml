@@ -34,7 +34,7 @@ jobs:
           cargo nextest run \
           --features test-clarity-v${{ matrix.clarity_version }} \
           --test wasm-generation \
-          --test standard | tee output.log
+          --test standard 2>&1| tee output.log
           test_exit=${PIPESTATUS[0]}
           echo "output.log: $(cat output.log)"
           grep -A 50 'Test failed: assertion' output.log >> failure_section.log
