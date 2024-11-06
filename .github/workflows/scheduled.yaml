@@ -49,7 +49,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           gh issue create \
-            --title "Property testing failure [${GITHUB_WORKFLOW} #${GITHUB_RUN_NUMBER}] Clarity::V${{ matrix.clarity_version }}" \
+            --title "Failure [${GITHUB_WORKFLOW} #${GITHUB_RUN_NUMBER}] Clarity::V${{ matrix.clarity_version }}" \
             --label "property-testing-failure" \
             --body "GitHub Actions workflow [${GITHUB_WORKFLOW} #${GITHUB_RUN_NUMBER}](https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}) Clarity::V${{ matrix.clarity_version }} failed.
             \`\`\`log
