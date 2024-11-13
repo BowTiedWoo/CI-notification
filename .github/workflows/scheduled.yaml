@@ -43,23 +43,28 @@ jobs:
             exit 101
           fi
 
+      - name: Prepare Slack Message
+        if: ${{ failure() }}
+        run: |
+          echo 'SLACK_PAYLOAD<<EOF' >> $GITHUB_ENV
+          echo '{
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "GitHub Actions workflow <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Property Testing #${{ github.run_number }}> Clarity::V${{ matrix.clarity_version }} failed.\n```'"$(echo "${{ env.failure_section }}" | sed ':a;N;$!ba;s/\n/\\n/g')"'```"
+                }
+              }
+            ]
+          }' >> $GITHUB_ENV
+          echo 'EOF' >> $GITHUB_ENV
+
       - name: Send message to Slack
-        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0 # v1.27.0
+        uses: slackapi/slack-github-action@37ebaef184d7626c5f204ab8d3baff4262dd30f0
         if: ${{ failure() }}
         with:
           channel-id: ${{ secrets.CHANNEL_ID }}
-          payload: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "GitHub Actions workflow <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Property Testing #${{ github.run_number }}> Clarity::V${{ matrix.clarity_version }} failed.
-                    ${{ env.failure_section }}"
-                  }
-                }
-              ]
-            }
+          payload: ${{ env.SLACK_PAYLOAD }}
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
