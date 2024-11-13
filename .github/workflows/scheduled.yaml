@@ -46,14 +46,15 @@ jobs:
       - name: Prepare Slack Message
         if: ${{ failure() }}
         run: |
+          MESSAGE="GitHub Actions workflow <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Property Testing #${{ github.run_number }}> Clarity::V${{ matrix.clarity_version }} failed.\n\`\`\`${{ env.failure_section }}\`\`\`"
           echo 'SLACK_PAYLOAD<<EOF' >> $GITHUB_ENV
-          echo '{
+          jq -n --arg msg "$MESSAGE" '{
             "blocks": [
               {
                 "type": "section",
                 "text": {
                   "type": "mrkdwn",
-                  "text": "GitHub Actions workflow <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|Property Testing #${{ github.run_number }}> Clarity::V${{ matrix.clarity_version }} failed.\n```'"$(echo "${{ env.failure_section }}" | sed ':a;N;$!ba;s/\n/\\n/g')"'```"
+                  "text": $msg
                 }
               }
             ]
